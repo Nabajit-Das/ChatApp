@@ -49,6 +49,11 @@ exports.sendMessage=async (req,res)=>{
                 message:"Receiver not found"
             })
         }
+        if(sender.Mobile===receiver.Mobile){
+            return res.status(400).send({
+                message:"You can't send message to yourself"
+            })
+        }
 
         const senderChat=sender.addChat(receiver)
         const receiverChat=receiver.addChat(sender)

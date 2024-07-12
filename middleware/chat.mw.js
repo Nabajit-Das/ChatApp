@@ -8,6 +8,7 @@ exports.verifyChatBody= async (req,res,next)=>{
                 message:"Friend ID not provided"
             })
         }
+        
         if(!req.body.message){
             return res.status(400).send({
                 message:"Message not provided"
