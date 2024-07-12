@@ -9,7 +9,7 @@ exports.signUp=async (req,res)=>{
     const newUser={
         username:reqBody.username,
         Mobile:reqBody.Mobile,
-        password:bcrypt.hashSync(reqBody.password)
+        password:bcrypt.hashSync(reqBody.password,8)
     }
     try{
         const createduser=await user.create(newUser)
@@ -39,7 +39,7 @@ exports.signIn=async (req,res)=>{
     else{
         const passwordIsValid=bcrypt.compareSync(reqBody.password,userFound.password)
         if(passwordIsValid){
-            const token=jwt.sign({id:userFound.id},auth.secret,{expiresIn:"1h"})
+            const token=jwt.sign({id:userFound.id},auth.secret,{expiresIn:'1h'})
             res.status(200).send({
                 id:userFound._id,
                 username:userFound.username,

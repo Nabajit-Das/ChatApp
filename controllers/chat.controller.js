@@ -120,3 +120,51 @@ exports.showChatswith=async(req,res)=>{
         })
     }
 }
+
+
+exports.handleConnection=(io)=>{
+    io.on("connection",(socket)=>{
+        console.log("User Connected")
+        socket.on("join",async (token)=>{
+            const userMobile=await verifyToken(token)
+            if(userMobile){
+                socket.join(userMobile)
+                console.log('User joined with Mobile Number: '+userMobile)
+            }
+        });
+
+        socket.on("sendMessage",async ({token,receiverId,message})=>{
+            const senderId=await verifyToken(token)
+            const sender=await user.findOne({Mobile:senderId})
+            const receiver=await user.findOne({Mobile:receiverId})
+            if(!sender){
+                return
+            }
+            if(!receiver){
+                return
+            }
+            const senderChat=sender.addChat(receiver)
+            const receiverChat=receiver.addChat(sender)
+            senderChat.messages.push({
+                content:message,
+                sent:true
+            })
+            receiverChat.messages.push({
+                content:message,
+                sent:false
+            })
+            await sender.save()
+            await receiver.save()
+            io.to(sender.Mobile).emit("message",{
+                message,
+                receiverId,
+                sent:true
+            })
+            io.to(receiver.Mobile).emit("message",{
+                message,
+                senderId,
+                sent:false
+            })
+        })
+    })
+}
