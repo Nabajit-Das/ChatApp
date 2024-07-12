@@ -15,7 +15,8 @@ exports.signUp=async (req,res)=>{
         const createduser=await user.create(newUser)
         res.status(201).send({
             message:"User created successfully",
-            createduser
+            createduser,
+            Info:"Send first message to any user first time as try to verify if the user exists then proceed normally"
         })
     }
     catch(err){
@@ -44,7 +45,8 @@ exports.signIn=async (req,res)=>{
                 id:userFound._id,
                 username:userFound.username,
                 Mobile:userFound.Mobile,
-                accessToken:token
+                accessToken:token,
+                Info:"Send first message to any user first time as try to verify if the user exists then proceed normally"
             })
         }
         else{
